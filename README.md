@@ -1,5 +1,5 @@
 # Intended functionality
-Using Node.js, hash a simple string indepedently stored in a local text file. Keep a map of said hash to check against
+Using Node.js, hash a simple string independently stored in a local text file. Keep a map of said hash to check against
 
 ### SHA
 SHA will be used as a baseline to learn from, though not necessarily directly reproduced
