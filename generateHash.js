@@ -1,5 +1,5 @@
 const fs = require('fs');
-const TEXT_FILE_TO_HASH = "myfakepassword.txt";
+const TEXT_FILE_TO_HASH = process.argv[2];
 function getStrFromFile(fileName) {
     return new Promise((resolve, reject) => {
         fs.readFile(fileName, "utf-8", (err, data) => {
