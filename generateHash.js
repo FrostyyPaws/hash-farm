@@ -12,24 +12,29 @@ function getStrFromFile(fileName) {
     })
 };
 function createSalt(digits) {
-    //INCOMPLETE, WIP, TODO: provide method for user inputting a salt alongside text. then generate salt if none passed, but used provided salt if passed
+    //TODO: provide method for user inputting a salt alongside text. then generate salt if none passed, but used provided salt if passed
     let salt = "";
     for (let i = 0; i < digits; i++) {
-        salt += Math.round(Math.random()*9).toString();
+        salt += Math.round(Math.random() * 9).toString();
     }
-    console.log('salt',salt);
-    return "salt placeholder";
+    return salt.split('').map(e => Number(e));
 }
 function createHashFromString(str) {
-    const DIGITS_LIMIT = 38; 
+    const DIGITS_LIMIT = 38;
     let salt = createSalt(DIGITS_LIMIT);
+    console.log('salt', salt);
     let seeds = str.split('').map(c => c.charCodeAt(0)).join('');
     let seasons = seeds.length;
     let cycles = Number(seeds[seeds.length - 1]) + 2;
     for (let i = 0; i < seasons * cycles; i++) {
         seeds = seeds.split('');
         let fertilizer = (Number(seeds.splice(0, 1)[0]) + 1);
-        if (i > seasons) Number(seeds[1]);
+        /* WIP
+        if (i > seasons) {
+            let saltingPlotIndex = Number(seeds[1]);
+            seeds.splice(saltingPlotIndex,0,salt)
+        }
+        */
         seeds = BigInt(seeds.join(''));
         seeds *= BigInt(fertilizer);
         seeds = seeds.toString();
