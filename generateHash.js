@@ -1,5 +1,6 @@
 console.time("run");
 const fs = require('fs');
+const STRING_LENGTH_LIMIT = 100;
 const TEXT_FILE_TO_HASH = "";
 const PASSED_STRING_TO_HASH = process.argv[2];
 function getStrFromFile(fileName) {
@@ -29,8 +30,7 @@ function createHashFromString(str) {
     return seeds
 };
 function checkWithinLengthLimit(str){ 
-    const LENGTH_LIMIT = 100;
-    return str.length <= LENGTH_LIMIT;
+    return str.length <= STRING_LENGTH_LIMIT;
 }
 async function run() {
     let str;
@@ -44,7 +44,7 @@ async function run() {
         return;
     }
     if (!checkWithinLengthLimit(str)){ 
-        console.log("Length of string exceeded limit");
+        console.log(`Length of string exceeded limit of ${STRING_LENGTH_LIMIT}`);
         return;
     }
     let hash = createHashFromString(str);
