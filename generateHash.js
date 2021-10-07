@@ -1,6 +1,6 @@
 console.time("run");
 const fs = require('fs');
-const STRING_LENGTH_LIMIT = 100;
+const STRING_LENGTH_LIMIT = 20;
 const TEXT_FILE_TO_HASH = "";
 const PASSED_STRING_TO_HASH = process.argv[2];
 const SALT_TO_USE = process.argv[3];
@@ -20,31 +20,37 @@ function createSalt(digits) {
     }
     return salt.split('').map(e => Number(e));
 }
-function sprinkleSalt(seeds, salt) {
-    let saltPlotIndex = Number(seeds[1]);
-    saltPlotIndex = (saltPlotIndex >= seeds.length) ? (seeds.length - 1) : saltPlotIndex;
-    seeds.splice(saltPlotIndex, 0, salt[saltPlotIndex])
-    return seeds;
+function stringify(input){ 
+    if (Array.isArray(input)){ 
+        input = input.join('')
+    } else { 
+        input.toString();
+    }
+    return input
+}
+function plantFarm(seeds,salt){ 
+    seeds = stringify(seeds);
+    salt = stringify(salt);
+    return seeds + salt;
 }
 function createHashFromString(str) {
     const DIGITS_LIMIT = 38;
     let salt = createSalt(DIGITS_LIMIT);
-    console.log('salt', salt);
     let seeds = str.split('').map(c => c.charCodeAt(0)).join('');
-    let seasons = seeds.length;
-    let cycles = Number(seeds[seeds.length - 1]) + 2;
-    for (let i = 0; i < seasons * cycles; i++) {
-        seeds = seeds.split('');
-        let fertilizer = (Number(seeds.splice(0, 1)[0]) + 1);
-        if (i > seasons) { seeds = sprinkleSalt(seeds, salt) }
-        seeds = BigInt(seeds.join(''));
-        seeds *= BigInt(fertilizer);
-        seeds = seeds.toString();
-        if (i > seasons) { seeds = seeds.substr(0, DIGITS_LIMIT - 1) }
-        seeds += fertilizer.toString();
-        if (seeds.length < DIGITS_LIMIT) { i-- };
+    let farm = plantFarm(seeds,salt);
+    let plots = farm.length;
+    let cycles = 100;
+    for (let i = 0; i < plots * cycles; i++) {
+        farm = farm.split('');
+        let fertilizer = (Number(farm.splice(0, 1)[0]) + 1);
+        farm = BigInt(farm.join(''));
+        farm *= BigInt(fertilizer);
+        farm = farm.toString();
+        farm += fertilizer.toString();
     }
-    return seeds
+    farm = farm.substr(0, DIGITS_LIMIT);
+    console.log(`Salt:${salt.join('')}`)
+    return farm
 };
 function isWithinLengthLimit(str) {
     return str.length <= STRING_LENGTH_LIMIT;
