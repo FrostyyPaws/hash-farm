@@ -19,28 +19,29 @@ function createSalt(digits) {
     }
     return salt.split('').map(e => Number(e));
 }
+function sprinkleSalt(seeds, salt) {
+    let saltPlotIndex = Number(seeds[1]);
+    saltPlotIndex = (saltPlotIndex >= seeds.length) ? (seeds.length - 1) : saltPlotIndex;
+    seeds.splice(saltPlotIndex, 0, salt[saltPlotIndex])
+    return seeds;
+}
 function createHashFromString(str) {
     const DIGITS_LIMIT = 38;
     let salt = createSalt(DIGITS_LIMIT);
-    console.log('salt', salt);
+    console.log('salt', salt.join(''));
     let seeds = str.split('').map(c => c.charCodeAt(0)).join('');
     let seasons = seeds.length;
     let cycles = Number(seeds[seeds.length - 1]) + 2;
     for (let i = 0; i < seasons * cycles; i++) {
         seeds = seeds.split('');
         let fertilizer = (Number(seeds.splice(0, 1)[0]) + 1);
-        /* WIP
-        if (i > seasons) {
-            let saltingPlotIndex = Number(seeds[1]);
-            seeds.splice(saltingPlotIndex,0,salt)
-        }
-        */
+        if (i > seasons) { seeds = sprinkleSalt(seeds, salt) }
         seeds = BigInt(seeds.join(''));
         seeds *= BigInt(fertilizer);
         seeds = seeds.toString();
-        if (i > seasons) seeds = seeds.substr(0, DIGITS_LIMIT - 1);
+        if (i > seasons) { seeds = seeds.substr(0, DIGITS_LIMIT - 1) }
         seeds += fertilizer.toString();
-        if (seeds.length < DIGITS_LIMIT) i--;
+        if (seeds.length < DIGITS_LIMIT) { i-- };
     }
     return seeds
 };
