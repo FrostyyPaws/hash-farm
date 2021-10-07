@@ -11,30 +11,31 @@ function getStrFromFile(fileName) {
 };
 function createHashFromString(str) {
     const DIGITS_LIMIT = 38;
-    let seed = str.split('').map(c => c.charCodeAt(0)).join('');
-    let cycles = seed.length;
-    let repeatCycles = Number(seed[seed.length - 1]) + 2
-    for (let i = 0; i < cycles * repeatCycles; i++) {
-        seed = seed.split('')
-        let fertilizer = (Number(seed.splice(0, 1)[0]) + 1);
-        seed = BigInt(seed.join(''));
-        seed *= BigInt(fertilizer);
-        seed = seed.toString();
-        if (i > cycles) {
-            seed = seed.substr(0, DIGITS_LIMIT - 1);
-        }
-        seed += fertilizer.toString();
-        if (seed.length < DIGITS_LIMIT) i--;
-
+    let seeds = str.split('').map(c => c.charCodeAt(0)).join('');
+    let seasons = seeds.length;
+    let cycles = Number(seeds[seeds.length - 1]) + 2
+    for (let i = 0; i < seasons * cycles; i++) {
+        seeds = seeds.split('')
+        let fertilizer = (Number(seeds.splice(0, 1)[0]) + 1);
+        if (i > seasons) Number(seeds[1]);
+        seeds = BigInt(seeds.join(''));
+        seeds *= BigInt(fertilizer);
+        seeds = seeds.toString();
+        if (i > seasons) seeds = seeds.substr(0, DIGITS_LIMIT - 1);
+        seeds += fertilizer.toString();
+        if (seeds.length < DIGITS_LIMIT) i--;
     }
-    return seed
+    return seeds
 };
 async function run() {
     let str;
     if (TEXT_FILE_TO_HASH) {
         str = await getStrFromFile(TEXT_FILE_TO_HASH);
-    } else {
+    } else if(PASSED_STRING_TO_HASH) {
         str = PASSED_STRING_TO_HASH;
+    } else { 
+        console.log("No string given as argument")
+        return;
     }
     let hash = createHashFromString(str);
     console.log(`Hash:${hash} / Original:${str}`)
