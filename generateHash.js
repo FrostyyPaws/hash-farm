@@ -3,6 +3,7 @@ const fs = require('fs');
 const STRING_LENGTH_LIMIT = 100;
 const TEXT_FILE_TO_HASH = "";
 const PASSED_STRING_TO_HASH = process.argv[2];
+const SALT_TO_USE = process.argv[3];
 function getStrFromFile(fileName) {
     return new Promise((resolve, reject) => {
         fs.readFile(fileName, "utf-8", (err, data) => {
@@ -12,7 +13,7 @@ function getStrFromFile(fileName) {
     })
 };
 function createSalt(digits) {
-    //TODO: provide method for user inputting a salt alongside text. then generate salt if none passed, but used provided salt if passed
+    if (SALT_TO_USE) return SALT_TO_USE;
     let salt = "";
     for (let i = 0; i < digits; i++) {
         salt += Math.round(Math.random() * 9).toString();
@@ -28,7 +29,7 @@ function sprinkleSalt(seeds, salt) {
 function createHashFromString(str) {
     const DIGITS_LIMIT = 38;
     let salt = createSalt(DIGITS_LIMIT);
-    console.log('salt', salt.join(''));
+    console.log('salt', salt);
     let seeds = str.split('').map(c => c.charCodeAt(0)).join('');
     let seasons = seeds.length;
     let cycles = Number(seeds[seeds.length - 1]) + 2;
