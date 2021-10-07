@@ -11,13 +11,23 @@ function getStrFromFile(fileName) {
         })
     })
 };
+function createSalt(digits) {
+    //INCOMPLETE, WIP, TODO: provide method for user inputting a salt alongside text. then generate salt if none passed, but used provided salt if passed
+    let salt = "";
+    for (let i = 0; i < digits; i++) {
+        salt += Math.round(Math.random()*9).toString();
+    }
+    console.log('salt',salt);
+    return "salt placeholder";
+}
 function createHashFromString(str) {
-    const DIGITS_LIMIT = 38; //TODO: Make salt a string where each char is randomized 0-9, and length of string is equal to DIGITS_LIMIT
+    const DIGITS_LIMIT = 38; 
+    let salt = createSalt(DIGITS_LIMIT);
     let seeds = str.split('').map(c => c.charCodeAt(0)).join('');
     let seasons = seeds.length;
-    let cycles = Number(seeds[seeds.length - 1]) + 2
+    let cycles = Number(seeds[seeds.length - 1]) + 2;
     for (let i = 0; i < seasons * cycles; i++) {
-        seeds = seeds.split('')
+        seeds = seeds.split('');
         let fertilizer = (Number(seeds.splice(0, 1)[0]) + 1);
         if (i > seasons) Number(seeds[1]);
         seeds = BigInt(seeds.join(''));
@@ -29,21 +39,20 @@ function createHashFromString(str) {
     }
     return seeds
 };
-function checkWithinLengthLimit(str){ 
+function isWithinLengthLimit(str) {
     return str.length <= STRING_LENGTH_LIMIT;
 }
 async function run() {
     let str;
-    if (TEXT_FILE_TO_HASH) {
-        str = await getStrFromFile(TEXT_FILE_TO_HASH);
-
-    } else if(PASSED_STRING_TO_HASH) {
+    if (PASSED_STRING_TO_HASH) {
         str = PASSED_STRING_TO_HASH;
-    } else { 
+    } else if (TEXT_FILE_TO_HASH) {
+        str = await getStrFromFile(TEXT_FILE_TO_HASH);
+    } else {
         console.log("No string given as argument")
         return;
     }
-    if (!checkWithinLengthLimit(str)){ 
+    if (!isWithinLengthLimit(str)) {
         console.log(`Length of string exceeded limit of ${STRING_LENGTH_LIMIT}`);
         return;
     }
