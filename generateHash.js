@@ -13,22 +13,26 @@ function getStrFromFile(fileName) {
     })
 };
 function createSalt(digits) {
-    if (SALT_TO_USE) return SALT_TO_USE;
     let salt = "";
-    for (let i = 0; i < digits; i++) {
-        salt += Math.round(Math.random() * 9).toString();
+    if (SALT_TO_USE) {
+        salt = SALT_TO_USE
+    } else {
+        for (let i = 0; i < digits; i++) {
+            salt += Math.round(Math.random() * 9).toString();
+        }
+        salt = salt.split('').map(e => Number(e));
     }
-    return salt.split('').map(e => Number(e));
+    return salt;
 }
-function stringify(input){ 
-    if (Array.isArray(input)){ 
+function stringify(input) {
+    if (Array.isArray(input)) {
         input = input.join('')
-    } else { 
+    } else {
         input.toString();
     }
     return input
 }
-function plantFarm(seeds,salt){ 
+function plantFarm(seeds, salt) {
     seeds = stringify(seeds);
     salt = stringify(salt);
     return seeds + salt;
@@ -37,7 +41,7 @@ function createHashFromString(str) {
     const DIGITS_LIMIT = 38;
     let salt = createSalt(DIGITS_LIMIT);
     let seeds = str.split('').map(c => c.charCodeAt(0)).join('');
-    let farm = plantFarm(seeds,salt);
+    let farm = plantFarm(seeds, salt);
     let plots = farm.length;
     let cycles = 100;
     for (let i = 0; i < plots * cycles; i++) {
@@ -74,6 +78,4 @@ async function run() {
 }
 run();
 console.timeEnd("run");
-//we need entropy, one-way mutations, and salt
-
 
