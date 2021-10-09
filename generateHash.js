@@ -1,7 +1,6 @@
-console.time("run");
 const fs = require('fs');
 const STRING_LENGTH_LIMIT = 20;
-const TEXT_FILE_TO_HASH = "";
+const TEXT_FILE_TO_HASH = "myfakepassword.txt";
 const PASSED_STRING_TO_HASH = process.argv[2];
 const SALT_TO_USE = process.argv[3];
 function getStrFromFile(fileName) {
@@ -20,8 +19,8 @@ function createSalt(digits) {
         for (let i = 0; i < digits; i++) {
             salt += Math.round(Math.random() * 9).toString();
         }
-        salt = salt.split('').map(e => Number(e));
     }
+    salt = salt.split('').map(e => Number(e));
     return salt;
 }
 function stringify(input) {
@@ -60,6 +59,7 @@ function isWithinLengthLimit(str) {
     return str.length <= STRING_LENGTH_LIMIT;
 }
 async function run() {
+    console.time("run");
     let str;
     if (PASSED_STRING_TO_HASH) {
         str = PASSED_STRING_TO_HASH;
@@ -75,7 +75,8 @@ async function run() {
     }
     let hash = createHashFromString(str);
     console.log(`Hash:${hash} / Original:${str}`)
+    console.timeEnd("run");
 }
 run();
-console.timeEnd("run");
+
 
